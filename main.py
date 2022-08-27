@@ -1,4 +1,3 @@
-import sys
 import tkinter as tk
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showinfo, showerror
@@ -6,13 +5,6 @@ from tkinter.messagebox import showinfo, showerror
 from PIL import ImageTk, ImageDraw, Image, ImageFont
 
 from bitmapfonts import run
-
-if sys.platform == "linux":
-    initialdir = "/usr/share/fonts"
-elif sys.platform == "darwin":
-    initialdir = "/System/Library/Fonts"
-else:
-    initialdir = "./"
 
 
 def set_font_file():
@@ -24,7 +16,7 @@ def set_font_file():
     global font_file
     font_file = askopenfilename(title='选择字体文件',
                                 filetypes=[('TrueType Font', '*.ttf'), ('TrueType Font', '*.ttc'), ('All Files', '*')],
-                                initialdir=initialdir)
+                                initialdir="./")
     font_file_show.set(font_file)
     get_image()
 
@@ -37,12 +29,12 @@ def set_text_file():
     """
     global text_file, text
     text_file = askopenfilename(title='选择字符集文件',
-                                filetypes=[('文本文件', '*.txt'), ('All Files', '*')], initialdir=initialdir)
+                                filetypes=[('文本文件', '*.txt'), ('All Files', '*')], initialdir="./")
     text_file_buf = open(text_file, "r", encoding="utf-8")
     text = text_file_buf.read()
     text_input.delete("1.0", tk.END)
     text_input.insert(tk.END, text)
-    text_len.set(f'字符数量: {len(text)}')
+    text_len.set(f'字符数量: {len(set(text))}')
     text_file_show.set(text_file)
     get_image()
 
@@ -70,7 +62,7 @@ def save_file():
 def text_input_update(_):
     global text
     text = text_input.get("1.0", tk.END)[:-1]
-    text_len.set(f'字符数量: {len(text)}')
+    text_len.set(f'字符数量: {len(set(text))}')
 
 
 def get_image(*args):
@@ -94,6 +86,8 @@ def get_image(*args):
 root = tk.Tk()
 root.title("BitMap Font Tools")
 root.geometry("620x620")
+root.minsize(620, 620)
+root.maxsize(620, 620)
 
 font_file = ""
 text_file = ""
@@ -116,13 +110,13 @@ setting_frame.place(x=10, y=10, width=400, height=300)
 # 字体文件设置
 font_file_frame = tk.LabelFrame(setting_frame, text="字体选择")
 font_file_frame.pack()
-tk.Entry(font_file_frame, textvariable=font_file_show, width=40).grid(row=1, column=1)
+tk.Entry(font_file_frame, textvariable=font_file_show, width=30).grid(row=1, column=1)
 tk.Button(font_file_frame, text="选择文件", command=set_font_file).grid(row=1, column=2)
 
 # 字符集设置
 text_file_frame = tk.LabelFrame(setting_frame, text="字体集选择")
 text_file_frame.pack()
-tk.Entry(text_file_frame, textvariable=text_file_show, width=40).grid(row=1, column=1)
+tk.Entry(text_file_frame, textvariable=text_file_show, width=30).grid(row=1, column=1)
 tk.Button(text_file_frame, text="选择文件", command=set_text_file).grid(row=1, column=2)
 
 # 字号设置
@@ -173,7 +167,7 @@ preview_text.set("你")
 
 font_preview = tk.LabelFrame(root, text="预览")
 font_preview.place(x=420, y=10, width=190, height=200)
-preview_text_input = tk.Entry(font_preview, textvariable=preview_text, width=16)
+preview_text_input = tk.Entry(font_preview, textvariable=preview_text, width=8)
 preview_text_input.bind("<KeyRelease>", get_image)
 preview_text_input.grid(row=1, column=1)
 tk.Button(font_preview, text="更新图像", command=get_image).grid(row=1, column=2)
@@ -182,7 +176,7 @@ tk.Button(font_preview, text="更新图像", command=get_image).grid(row=1, colu
 # 第四部分
 #
 bmf_generate = tk.LabelFrame(root, text="生成")
-bmf_generate.place(x=420, y=220, width=190, height=380)
+bmf_generate.place(x=420, y=220, width=190, height=390)
 tk.Label(bmf_generate, textvariable=estimated_size).grid(row=1, column=1)
 tk.Button(bmf_generate, text="生成点阵文件", command=save_file).grid(row=2, column=1)
 
