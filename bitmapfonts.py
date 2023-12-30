@@ -101,7 +101,10 @@ def get_unicode(word) -> bytes:
     Returns:
 
     """
-    return struct.pack(">H", ord(word))
+    o = ord(word)
+    if o > 65535:
+        o = 65311  # 65311 = ord("？") or 32 = ord(" ")
+    return struct.pack(">H", o)
 
 
 def run(font_file, font_size=16, offset=(0, 0), text_file=None, text=None, bitmap_fonts_name=None,
