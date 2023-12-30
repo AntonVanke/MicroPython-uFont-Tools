@@ -15,7 +15,8 @@ def set_font_file():
     """
     global font_file
     font_file = askopenfilename(title='选择字体文件',
-                                filetypes=[('TrueType Font', '*.ttf'), ('TrueType Font', '*.ttc'), ('All Files', '*')],
+                                filetypes=[('Font File', '*.ttf'), ('Font File', '*.ttc'), ('Font File', '*.otf'),
+                                           ('All Files', '*')],
                                 initialdir="./")
     font_file_show.set(font_file)
     get_image()
